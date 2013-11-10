@@ -28,13 +28,13 @@
     var f = factor * value - shift;
     document.write("F: ");
     document.writeln(f);
-    var ilogf = Math.round(Math.log(f/minfreq) / Math.log(gap));      
+    var ilogf = Math.round(Math.log(f/minfreq) / Math.log(gap));
     osc.frequency.value = minfreq * Math.pow(ilogf, gap);
     document.write("Freq: ");
     document.writeln(minfreq * Math.pow(gap, ilogf));
   }
 
-  
+
   function wsInit() {
     ws = new WebSocket('ws://192.168.1.111:1337');
 
@@ -57,7 +57,6 @@
       } else {
         throw new Error("AudioContext not supported :-/");
       }
-
       osc = context.createOscillator();
       osc.type = 0;
       osc.frequency.value = 1024;
@@ -77,3 +76,4 @@
 </div>
 </body>
 </html>
+
