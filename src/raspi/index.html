@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script type="text/javascript">
+  var ws = null;
+  var username = '';
+  var value = 0;
+  var context;
+  var osc;
+  var min = 2.0;
+  var max = 90.0;
+  var minfreq = 80.0;
+  var maxfreq = 2048.0;
+  var factor = (maxfreq-minfreq)/(max-min);
+  var shift = factor * min - minfreq;
+  var gap = 1.148698355; // ratio of consecutive notes (pentatonic), 5th root of 2.
+
+  function wsOnMessage(e) {
+    value = JSON.parse(e.data);
+    value = parseFloat(value["data"]);
+    if(value > max) {
+      value = max;
+    } else if(value < min) {
+      value = min;
+    }
+    document.write("Value: ");
+    document.writeln(value);
+    var f = factor * value - shift;
+    document.write("F: ");
+    document.writeln(f);
+    var ilogf = Math.round(Math.log(f/minfreq) / Math.log(gap));      
+    osc.frequency.value = minfreq * Math.pow(ilogf, gap);
+    document.write("Freq: ");
+    document.writeln(minfreq * Math.pow(gap, ilogf));
+  }
+
+  
+  function wsInit() {
+    ws = new WebSocket('ws://192.168.1.111:1337');
+
+    ws.onopen = function() {
+    };
+
+    ws.onmessage = wsOnMessage;
+  }
+
+  window.addEventListener("load", init, false);
+
+  function init() {
+    try {
+      wsInit();
+
+      if (typeof AudioContext !== "undefined") {
+        context = new AudioContext();
+      } else if (typeof webkitAudioContext !== "undefined") {
+        context = new webkitAudioContext();
+      } else {
+        throw new Error("AudioContext not supported :-/");
+      }
+
+      osc = context.createOscillator();
+      osc.type = 0;
+      osc.frequency.value = 1024;
+      osc.noteOn(0);
+
+      osc.connect(context.destination);
+    } catch(e) {
+      throw e;
+    }
+  }
+
+</script>
+</head>
+<body>
+<div id="test">
+  Hooray!
+</div>
+</body>
+</html>
