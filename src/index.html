@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script type="text/javascript">
+  var ws = null;
+  var username = '';
+  var value = 0;
+  
+  function wsOnMessage(e) {
+      value = JSON.parse(e.data);
+      value = value["data"];
+      document.writeln(value);
+      document.writeln("<br>");
+  }
+
+  
+  function wsTest() {
+    ws = new WebSocket('ws://192.168.1.111:1337');
+
+    ws.onopen = function() {
+    };
+
+    ws.onmessage = wsOnMessage;
+  }
+</script>
+</head>
+<body>
+<div id="test">
+    <a href="javascript:wsTest()">Run Test</a>
+</div>
+</body>
+</html>
