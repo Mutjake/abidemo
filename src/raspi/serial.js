@@ -13,32 +13,46 @@ var htmlContents = "";
 var conns = [];
 
 var pre = "Ping: ",
-    post = " cm";
+    post = "cm";
 
 var lenPre = pre.length;
 var lenPost = post.length;
 
 var buffer = "";
-var lastVal = -1;
+var distance = -1;
+var lastVals = [-1,-1];
 
 serial.on("data", function(chunk) {
     buffer += chunk;
     var preIndex = buffer.indexOf(pre);
-    var postIndex = buffer.indexOf(post);
+    var postIndex = buffer.indexOf(post, preIndex);
     if(preIndex !== -1 && postIndex !== -1) {
-        var lastValCandidate = parseInt(buffer.substring(preIndex+lenPre,postIndex));
-        if(Math.abs(lastValCandidate-lastVal) < 200 || lastVal === -1) {
-            lastVal = lastValCandidate;  
-        }
-        //sys.puts(lastVal);
+        var parseSnippet = buffer.substring(preIndex+lenPre,postIndex);
+        var parseResult = parseInt(parseSnippet);
 
-        var json = JSON.stringify( {type: "value", data: lastVal} );
+        lastVals.push(parseResult);
+        lastVals.shift();
+//        for(var i = 1; i < lastVals.length; i++) {
+//	    if(lastVals[i] !== lastVals[0]) {
+//		return false;
+//            }
+//	}
+        if(Math.abs(lastVals[1]-parseResult) < 75) {
+           distance = parseResult;
+        }
+
+        if(distance < 3) {
+            distance = 3;
+	}
+
+        var json = JSON.stringify( {type: "value", data: distance} );
         for(var i=0; i < conns.length; i++) {
-            sys.puts("Sending new data (" + lastVal + ")");
             conns[i].sendUTF(json);
         }
 
 	buffer = "";
+    } else {
+        buffer = "";
     }        
 });
 
@@ -80,7 +94,7 @@ wsServer.on("request", function(request) {
    
     sys.puts((new Date()) + " Connection accepted.");
 
-    connection.sendUTF(JSON.stringify( {type: "value", data: lastVal} ));
+    connection.sendUTF(JSON.stringify( {type: "value", data: distance} ));
 
     connection.on("message", function(message) {
         sys.puts("WebSocket message: " + message);

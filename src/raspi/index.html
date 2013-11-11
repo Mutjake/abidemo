@@ -3,35 +3,45 @@
 <head>
 <script type="text/javascript">
   var ws = null;
+  var oscType = 1;
   var username = '';
   var value = 0;
   var context;
+  var gain;
   var osc;
   var min = 2.0;
-  var max = 90.0;
-  var minfreq = 80.0;
-  var maxfreq = 2048.0;
+  var max = 50.0;
+  var minfreq = 65.41;
+  var maxfreq = 800.0;
   var factor = (maxfreq-minfreq)/(max-min);
   var shift = factor * min - minfreq;
-  var gap = 1.148698355; // ratio of consecutive notes (pentatonic), 5th root of 2.
+  //var gap = 1.148698355; // ratio of consecutive notes (pentatonic), 5th root of 2.
+  var gap = 1.059463094;
+
+  function keyDownListener(ev) {
+    var keyCode = ev.keyCode;
+    if(keyCode === 32) {
+      //document.writeln("KeyDown!");
+      gain.gain.value = 1.0;
+    }
+  }
+
+  function keyUpListener(ev) {
+    var keyCode = ev.keyCode;
+    if(keyCode === 32) {
+      //document.writeln("KeyUp!");
+      gain.gain.value = 0.0;
+    }
+  }
 
   function wsOnMessage(e) {
     value = JSON.parse(e.data);
     value = parseFloat(value["data"]);
-    if(value > max) {
-      value = max;
-    } else if(value < min) {
-      value = min;
-    }
-    document.write("Value: ");
-    document.writeln(value);
+
     var f = factor * value - shift;
-    document.write("F: ");
-    document.writeln(f);
     var ilogf = Math.round(Math.log(f/minfreq) / Math.log(gap));
-    osc.frequency.value = minfreq * Math.pow(ilogf, gap);
-    document.write("Freq: ");
-    document.writeln(minfreq * Math.pow(gap, ilogf));
+    osc.frequency.value = minfreq * Math.pow(gap, ilogf);
+    
   }
 
 
@@ -50,6 +60,9 @@
     try {
       wsInit();
 
+      window.addEventListener("keydown", keyDownListener);
+      window.addEventListener("keyup", keyUpListener);
+
       if (typeof AudioContext !== "undefined") {
         context = new AudioContext();
       } else if (typeof webkitAudioContext !== "undefined") {
@@ -57,12 +70,16 @@
       } else {
         throw new Error("AudioContext not supported :-/");
       }
+
+      gain = context.createGain();
+      gain.gain.value = 0.0;
       osc = context.createOscillator();
-      osc.type = 0;
+      osc.type = oscType;
       osc.frequency.value = 1024;
       osc.noteOn(0);
 
-      osc.connect(context.destination);
+      osc.connect(gain);
+      gain.connect(context.destination);
     } catch(e) {
       throw e;
     }
