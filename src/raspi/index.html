@@ -3,6 +3,7 @@
 <head>
 <script type="text/javascript">
   var ws = null;
+  var wsAddr = "ws://192.168.2.3:1337";
   var oscType = 1;
   var username = '';
   var value = 0;
@@ -23,6 +24,7 @@
     if(keyCode === 32) {
       //document.writeln("KeyDown!");
       gain.gain.value = 1.0;
+      document.body.style.backgroundColor="#f30000"
     }
   }
 
@@ -31,6 +33,7 @@
     if(keyCode === 32) {
       //document.writeln("KeyUp!");
       gain.gain.value = 0.0;
+      document.body.style.backgroundColor="#ffffff"
     }
   }
 
@@ -46,7 +49,7 @@
 
 
   function wsInit() {
-    ws = new WebSocket('ws://192.168.1.111:1337');
+    ws = new WebSocket(wsAddr);
 
     ws.onopen = function() {
     };
@@ -88,9 +91,13 @@
 </script>
 </head>
 <body>
-<div id="test">
-  Hooray!
+<a href="https://github.com/Mutjake/abidemo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+<div align="center" id="image">
+<embed src="https://dl.dropboxusercontent.com/u/3085376/project_theremin.svg" type="image/svg+xml" />
 </div>
+<footer style="bottom:0;width=100%;height:60px;position:absolute">
+<p><font face="verdana"><a href="https://github.com/Mutjake/abidemo">https://github.com/Mutjake/abidemo</a></font></p> 
+</footer>
 </body>
 </html>
 
