@@ -61,3 +61,5 @@ We finish with the browser code:
 * An oscillator and audiocontext is created, which create the actual sound
 * The distance data is parsed when received and updated to be the frequency of the oscillator
 * Result: when the space bar is pressed, a noise is emitted. The frequency of the noise depends on the value of the distance sensor
+
+![Overview of how the things are connected](https://github.com/Mutjake/abidemo/blob/master/src/raspi/project_theremin.svg)
