@@ -32,6 +32,8 @@ So, with these specifications (and some brainstorming and going through boxes to
 
 ## Connections
 
+![Image decipting the Arduino connections](http://2.bp.blogspot.com/-EBxJWG31r20/UJ9LQgmFycI/AAAAAAAAASg/SSWcoQUi9iY/s1600/HC_SR04+sketch2.jpg One possible way to hook up the sensor to Arduino)
+
 * The wiring of HC-SR04 and Arduino is quite simple, good instructions can be found [here](http://arduinobasics.blogspot.fi/2012/11/arduinobasics-hc-sr04-ultrasonic-sensor.html) (spoiler: sensor GND to Arduino GND, sensor VCC to Arduino 5 volts, Trig to one of the digital pins or Arduino and Echo to another Arduino digital pin).
 * Arduino is connected via USB to the RPi, and they communicate using serial-via-USB
 * RPI and computer are connected using a LAN cable. In this case the computer was running a DHCP server, but using static IPs is also an option (and might make the life easier, since then we can avoid the reconfiguration of IP addresses from the code anytime the IP changes :-)
@@ -63,3 +65,24 @@ We finish with the browser code:
 * Result: when the space bar is pressed, a noise is emitted. The frequency of the noise depends on the value of the distance sensor
 
 ![Overview of how the things are connected](https://github.com/Mutjake/abidemo/raw/master/readme-images/theremin.png)
+
+## Creation
+
+So, when the idea was decided, it was time to start to implement this stuff. In the first phase the sensor was wired to the Arduino and the data printed to the serial port, which was observed using the serial reader of the Arduino IDE. This part was working quite quickly. Next thing to tackle was the web browser code, meaning getting some sound created. This was quite easy also. The websocket did take a bit of researching, but was not too difficult in the end. The NodeJS functioned well in this project, where something was needed quickly. The callback-oriented programming (if I may call it that) made it easy to create a component that does multiple things in tandem and the global namespace of javascript made it easy to transfer data from one place to another without too much hassle. The initial version of the demo was constructed quite quickly and it seemed that there would be time to even do additional functionality, but then disaster struck. While testing on the crowded table the distance sensor and the LAN port of the RPi contacted, shorting the stuff. This resulted in a bit of smoke (proper prototyping) and malfunctioning distance sensor. Luckily the RPi and the Arduino did not seem to have taken damage. The lesson of the story: keep your table uncrowded and use the enclosures, if you have one. With bad luck the short could have killed more stuff and perhaps the whole demo, and that would have been a shame.
+
+After this accident some time was wasted on checking that what works and what does not. Additionally this created a problem: a new sensor was needed. There could have been the possibility of creating similar demo with light sensor using mere components, but luckily a spare was found. This, however, delayed the project so that no additional stuff could be added. But this gives as another lesson: it is better to start simple, if the schedule is tight.
+
+In the end, the demo was completed in time and was set up to the stand at the abipäivät, causing annoyance to the volunteers taking care of the stand. Sorry :-) At least I added the space bar functionality after a bit of testing it (earlier the sound was constantly on).
+
+## Possible new features and todos
+
+* Clean up the code, add tests
+* Make the configuration easier, now it requires editing the source files
+* Make the NodeJS web server behave properly
+* Move the javascript in the index.html to a separate file
+* Make the background colour of the webpage change based on the distance information, for added psychedelia ;-)
+* Add option to create several oscillators and the possibility to tie them together
+* Add option to "lock" oscillators to a frequency
+* Add option to play chords with several oscillators
+* Add option to hook up several distance sensors, for maximum cacophony!
+* Etc, you can probably think more stuff yourself :-)
