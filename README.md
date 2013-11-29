@@ -9,6 +9,10 @@ This repository contains the code for so-called "Project Theremin", a quick and 
 
 Rough overview: when the components and the software are combined, it functions as a makeshift theremin, an instrument you play by waving your hands in the air. In other words, the demo uses a cheap ultrasound distance sensor and varies the frequency of a sound emitted from a software oscillator -- the closer you move your hand (or an object that the sound can bounce back from) the higher the frequency. Demo consists of ultrasound sensor, Arduino, Raspberry Pi and a computer running a browser, where the sound is generated using webaudio API.
 
+## License
+
+For the Arduino code GPLv3, for the rest MIT. Check the [LICENSE](LICENSE) file. 
+
 ## Motivation
 
 The motivation of the project was to do something "cool" to show off to the students-to-be to attract them to the marketing stand from the flow of people. The schedule was quite tight, so there were some constraints due to this: a) the project should be something simple because of time constraints so that there could be a guarantee that something demoable is ready in due time b) there was not time to source for parts so we had to do with the components readily available. The latter part almost bit back when one of the components was fried (explained later :-), but luckily a replacement could be borrowed.
